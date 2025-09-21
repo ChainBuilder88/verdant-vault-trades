@@ -67,16 +67,18 @@ NEXT_PUBLIC_VERIFIER_ADDRESS=YOUR_VERIFIER_ADDRESS
 
 ## Post-Deployment Configuration
 
-### Smart Contract Deployment
+### Smart Contract Deployment (Separate Process)
 
-1. **Deploy Contracts to Sepolia**:
+> **Important**: Smart contract deployment is a separate process from frontend deployment. The frontend can be deployed to Vercel without FHE dependencies.
+
+1. **Deploy Contracts to Sepolia** (Local Development):
    ```bash
-   # Install Hardhat
-   npm install --save-dev hardhat @nomiclabs/hardhat-ethers ethers
+   # Install Hardhat (in a separate directory or after frontend deployment)
+   npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox
    
-   # Configure hardhat.config.js for FHE deployment
+   # Configure hardhat.config.ts for deployment
    # Deploy contracts
-   npx hardhat run scripts/deploy.js --network sepolia
+   npx hardhat run scripts/deploy.ts --network sepolia
    ```
 
 2. **Update Environment Variables**:

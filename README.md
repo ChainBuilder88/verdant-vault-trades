@@ -64,17 +64,16 @@ Our FHE-enabled smart contracts provide institutional-grade security:
 
 ### 🚀 Contract Deployment
 
+> **Note**: Smart contract deployment is separate from frontend deployment. The frontend can be deployed to Vercel without FHE dependencies.
+
 ```bash
-# Install Hardhat and FHE dependencies
-npm install --save-dev hardhat @fhevm/solidity
+# For smart contract deployment (separate from frontend)
+npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox
 
-# Configure for FHE deployment
-npx hardhat init
-
-# Deploy to Sepolia testnet
+# Deploy contracts to Sepolia testnet
 npx hardhat run scripts/deploy.ts --network sepolia
 
-# Update contract addresses in config
+# Update contract addresses in your environment variables
 ```
 
 ## 🏗️ Architecture Overview
