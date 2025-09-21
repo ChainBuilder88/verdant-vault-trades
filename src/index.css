@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Eco-Fintech Design System - Carbon Credit Marketplace
+All colors MUST be HSL for perfect theme consistency.
+*/
+
+@layer base {
+  :root {
+    /* Eco Dark Theme - Professional Carbon Trading */
+    --background: 150 8% 8%;
+    --foreground: 120 15% 95%;
+
+    /* Cards with glass morphism */
+    --card: 150 10% 12%;
+    --card-foreground: 120 15% 95%;
+
+    /* Interactive elements */
+    --popover: 150 12% 10%;
+    --popover-foreground: 120 15% 95%;
+
+    /* Primary - Vibrant eco green */
+    --primary: 142 76% 36%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 142 76% 50%;
+
+    /* Secondary - Sustainable accent */
+    --secondary: 158 30% 25%;
+    --secondary-foreground: 120 15% 95%;
+
+    /* Muted earth tones */
+    --muted: 150 8% 15%;
+    --muted-foreground: 120 8% 65%;
+
+    /* Accent - Carbon reduction highlight */
+    --accent: 142 60% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Alerts */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Success - CO₂ reduction */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    /* Warning - Offset needed */
+    --warning: 45 93% 47%;
+    --warning-foreground: 0 0% 100%;
+
+    /* Borders and inputs */
+    --border: 150 15% 20%;
+    --input: 150 15% 18%;
+    --ring: 142 76% 36%;
+
+    --radius: 0.75rem;
+
+    /* Eco Gradients */
+    --gradient-eco: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-forest: linear-gradient(180deg, hsl(var(--primary)), hsl(var(--secondary)));
+    --gradient-carbon: linear-gradient(90deg, hsl(var(--muted)), hsl(var(--accent)));
+    --gradient-glass: linear-gradient(145deg, 
+      hsla(var(--card), 0.8), 
+      hsla(var(--card), 0.4));
+
+    /* Shadows with eco glow */
+    --shadow-eco: 0 10px 40px -10px hsla(var(--primary), 0.3);
+    --shadow-carbon: 0 8px 32px -8px hsla(var(--accent), 0.2);
+    --shadow-glass: 0 8px 32px 0 hsla(0, 0%, 0%, 0.37);
+
+    /* Animation variables */
+    --transition-eco: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --bounce-gentle: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
