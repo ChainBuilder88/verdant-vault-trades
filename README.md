@@ -66,13 +66,13 @@ Our FHE-enabled smart contracts provide institutional-grade security:
 
 ```bash
 # Install Hardhat and FHE dependencies
-npm install --save-dev hardhat @fhevm/lib
+npm install --save-dev hardhat @fhevm/solidity
 
 # Configure for FHE deployment
 npx hardhat init
 
 # Deploy to Sepolia testnet
-npx hardhat run scripts/deploy.js --network sepolia
+npx hardhat run scripts/deploy.ts --network sepolia
 
 # Update contract addresses in config
 ```

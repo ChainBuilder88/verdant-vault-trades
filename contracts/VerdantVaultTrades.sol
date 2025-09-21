@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "@fhevm/lib/Reencrypt.sol";
-import "@fhevm/lib/Fhe.sol";
+import { SepoliaConfig } from "@fhevm/solidity/config/ZamaConfig.sol";
+import { euint32, externalEuint32, euint64, ebool, FHE } from "@fhevm/solidity/lib/FHE.sol";
 
 contract VerdantVaultTrades {
-    using Fhe for euint32;
-    using Fhe for ebool;
+    using FHE for euint32;
+    using FHE for ebool;
     
     struct Trade {
         euint32 tradeId;
@@ -77,7 +77,7 @@ contract VerdantVaultTrades {
             amount: amount,
             price: price,
             isBuy: isBuy,
-            isActive: Fhe.asEbool(true),
+            isActive: FHE.asEbool(true),
             trader: msg.sender,
             timestamp: block.timestamp,
             assetType: assetType
@@ -89,7 +89,7 @@ contract VerdantVaultTrades {
         // Store encrypted trade data on-chain for audit purposes
         _storeEncryptedTradeData(tradeId, amount, price, isBuy);
         
-        emit TradeExecuted(tradeId, msg.sender, assetType, Fhe.decrypt(amount), Fhe.decrypt(price), Fhe.decrypt(isBuy));
+        emit TradeExecuted(tradeId, msg.sender, assetType, FHE.decrypt(amount), FHE.decrypt(price), FHE.decrypt(isBuy));
         return tradeId;
     }
     
@@ -119,9 +119,9 @@ contract VerdantVaultTrades {
         vaults[vaultId] = Vault({
             vaultId: initialAssets, // Will be set properly
             totalAssets: initialAssets,
-            performance: Fhe.asEuint32(0),
-            isActive: Fhe.asEbool(true),
-            isVerified: Fhe.asEbool(false),
+            performance: FHE.asEuint32(0),
+            isActive: FHE.asEbool(true),
+            isVerified: FHE.asEbool(false),
             manager: msg.sender,
             name: name,
             description: description,
@@ -137,7 +137,7 @@ contract VerdantVaultTrades {
         euint32 newPerformance
     ) public {
         require(vaults[vaultId].manager == msg.sender, "Only vault manager can update performance");
-        require(Fhe.decrypt(vaults[vaultId].isActive), "Vault must be active");
+        require(FHE.decrypt(vaults[vaultId].isActive), "Vault must be active");
         
         vaults[vaultId].performance = newPerformance;
     }
@@ -147,7 +147,7 @@ contract VerdantVaultTrades {
         require(vaults[vaultId].manager != address(0), "Vault does not exist");
         
         vaults[vaultId].isVerified = isVerified;
-        emit VaultVerified(vaultId, Fhe.decrypt(isVerified));
+        emit VaultVerified(vaultId, FHE.decrypt(isVerified));
     }
     
     function updateReputation(address user, euint32 reputation) public {
@@ -161,7 +161,7 @@ contract VerdantVaultTrades {
             managerReputation[user] = reputation;
         }
         
-        emit ReputationUpdated(user, Fhe.decrypt(reputation));
+        emit ReputationUpdated(user, FHE.decrypt(reputation));
     }
     
     function _updatePortfolio(
@@ -175,7 +175,7 @@ contract VerdantVaultTrades {
         
         euint32 tradeValue = amount * price;
         
-        if (Fhe.decrypt(isBuy)) {
+        if (FHE.decrypt(isBuy)) {
             portfolio.totalValue = portfolio.totalValue + tradeValue;
             portfolio.holdings[assetType] = portfolio.holdings[assetType] + amount;
         } else {
@@ -183,9 +183,9 @@ contract VerdantVaultTrades {
             portfolio.holdings[assetType] = portfolio.holdings[assetType] - amount;
         }
         
-        portfolio.tradeCount = portfolio.tradeCount + Fhe.asEuint32(1);
+        portfolio.tradeCount = portfolio.tradeCount + FHE.asEuint32(1);
         
-        emit PortfolioUpdated(trader, Fhe.decrypt(portfolio.totalValue), Fhe.decrypt(portfolio.profitLoss));
+        emit PortfolioUpdated(trader, FHE.decrypt(portfolio.totalValue), FHE.decrypt(portfolio.profitLoss));
     }
     
     function getTradeInfo(uint256 tradeId) public view returns (
@@ -199,10 +199,10 @@ contract VerdantVaultTrades {
     ) {
         Trade storage trade = trades[tradeId];
         return (
-            Fhe.decrypt(trade.amount),
-            Fhe.decrypt(trade.price),
-            Fhe.decrypt(trade.isBuy),
-            Fhe.decrypt(trade.isActive),
+            FHE.decrypt(trade.amount),
+            FHE.decrypt(trade.price),
+            FHE.decrypt(trade.isBuy),
+            FHE.decrypt(trade.isActive),
             trade.trader,
             trade.timestamp,
             trade.assetType
@@ -221,10 +221,10 @@ contract VerdantVaultTrades {
     ) {
         Vault storage vault = vaults[vaultId];
         return (
-            Fhe.decrypt(vault.totalAssets),
-            Fhe.decrypt(vault.performance),
-            Fhe.decrypt(vault.isActive),
-            Fhe.decrypt(vault.isVerified),
+            FHE.decrypt(vault.totalAssets),
+            FHE.decrypt(vault.performance),
+            FHE.decrypt(vault.isActive),
+            FHE.decrypt(vault.isVerified),
             vault.manager,
             vault.name,
             vault.description,
@@ -240,19 +240,19 @@ contract VerdantVaultTrades {
     ) {
         Portfolio storage portfolio = portfolios[trader];
         return (
-            Fhe.decrypt(portfolio.totalValue),
-            Fhe.decrypt(portfolio.profitLoss),
-            Fhe.decrypt(portfolio.tradeCount),
-            Fhe.decrypt(portfolio.isPrivate)
+            FHE.decrypt(portfolio.totalValue),
+            FHE.decrypt(portfolio.profitLoss),
+            FHE.decrypt(portfolio.tradeCount),
+            FHE.decrypt(portfolio.isPrivate)
         );
     }
     
     function getTraderReputation(address trader) public view returns (uint32) {
-        return Fhe.decrypt(traderReputation[trader]);
+        return FHE.decrypt(traderReputation[trader]);
     }
     
     function getManagerReputation(address manager) public view returns (uint32) {
-        return Fhe.decrypt(managerReputation[manager]);
+        return FHE.decrypt(managerReputation[manager]);
     }
     
     function setPortfolioPrivacy(address trader, ebool isPrivate) public {
@@ -262,11 +262,11 @@ contract VerdantVaultTrades {
     
     function deactivateTrade(uint256 tradeId) public {
         require(trades[tradeId].trader == msg.sender, "Only trader can deactivate trade");
-        trades[tradeId].isActive = Fhe.asEbool(false);
+        trades[tradeId].isActive = FHE.asEbool(false);
     }
     
     function deactivateVault(uint256 vaultId) public {
         require(vaults[vaultId].manager == msg.sender, "Only manager can deactivate vault");
-        vaults[vaultId].isActive = Fhe.asEbool(false);
+        vaults[vaultId].isActive = FHE.asEbool(false);
     }
 }
