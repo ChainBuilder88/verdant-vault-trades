@@ -83,11 +83,27 @@ contract VerdantVaultTrades {
             assetType: assetType
         });
         
-        // Update portfolio
+        // Update portfolio using encrypted computation
         _updatePortfolio(msg.sender, assetType, amount, price, isBuy);
+        
+        // Store encrypted trade data on-chain for audit purposes
+        _storeEncryptedTradeData(tradeId, amount, price, isBuy);
         
         emit TradeExecuted(tradeId, msg.sender, assetType, Fhe.decrypt(amount), Fhe.decrypt(price), Fhe.decrypt(isBuy));
         return tradeId;
+    }
+    
+    function _storeEncryptedTradeData(
+        uint256 tradeId,
+        euint32 amount,
+        euint32 price,
+        ebool isBuy
+    ) internal {
+        // Store encrypted trade data for regulatory compliance
+        // This ensures data is available for audit without revealing sensitive information
+        trades[tradeId].amount = amount;
+        trades[tradeId].price = price;
+        trades[tradeId].isBuy = isBuy;
     }
     
     function createVault(
